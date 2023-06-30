@@ -11,14 +11,15 @@ header("Access-Control-Allow-Headers: Content-Type");
 
 include("../Config/config.php");
 include('../Models/Db.class.php');
-include('../Models/PaymentMethods.class.php');
+include('../Models/ToolsCategories.class.php');
 
 $action = isset($_POST["action"]) ? $_POST["action"] : '';
-$paymentMethods = new PaymentMethods();
+$toolsCategories = new ToolsCategories();
 $message = array();
 switch ($action) {
     case "getAll":
-        $message = $paymentMethods->getAll();
+        $categoryId = $_POST["categoryId"];
+        $message = $toolsCategories->getByCategoriesId($categoryId);
         break;
     default:
         $message = "action is not found";

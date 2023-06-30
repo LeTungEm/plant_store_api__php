@@ -20,7 +20,7 @@ switch ($action) {
     case "getAll":
         $message = $order->getAll();
         break;
-    case "getDisplayCategories":
+    case "insertOrder":
         $transportFee = $_POST["transportFee"];
         $nameReceiver = $_POST["nameReceiver"];
         $phoneReceiver = $_POST["phoneReceiver"];
@@ -44,6 +44,6 @@ switch ($action) {
 }
 
 header('Content-Type: application/json; charset=utf-8');
-ob_clean();
-echo json_encode($message);
+// ob_clean();
+echo json_encode($message, JSON_NUMERIC_CHECK);
 ?>

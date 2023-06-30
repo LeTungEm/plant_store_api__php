@@ -20,10 +20,10 @@ switch ($action) {
     case "getAll":
         $message = $orderDetail->getAll();
         break;
-    case "getDisplayCategories":
+    case "insertOrderDetail":
         $orderId = $_POST["orderId"];
-        $orderDetail = $_POST["orderDetail"];
-        $message = $orderDetail->insertOrderDetail($orderId, $orderDetail);
+        $orderDetails = $_POST["orderDetail"];
+        $message = $orderDetail->insertOrderDetail($orderId, $orderDetails);
         break;
     default:
         $message = "action is not found";
@@ -32,6 +32,6 @@ switch ($action) {
 }
 
 header('Content-Type: application/json; charset=utf-8');
-ob_clean();
-echo json_encode($message);
+// ob_clean();
+echo json_encode($message, JSON_NUMERIC_CHECK);
 ?>

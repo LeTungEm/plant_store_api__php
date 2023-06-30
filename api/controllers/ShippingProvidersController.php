@@ -11,14 +11,14 @@ header("Access-Control-Allow-Headers: Content-Type");
 
 include("../Config/config.php");
 include('../Models/Db.class.php');
-include('../Models/PaymentMethods.class.php');
+include('../Models/ShippingProviders.class.php');
 
 $action = isset($_POST["action"]) ? $_POST["action"] : '';
-$paymentMethods = new PaymentMethods();
+$shippingProviders = new ShippingProviders();
 $message = array();
 switch ($action) {
     case "getAll":
-        $message = $paymentMethods->getAll();
+        $message = $shippingProviders->getAll();
         break;
     default:
         $message = "action is not found";

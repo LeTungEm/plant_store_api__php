@@ -22,10 +22,7 @@ switch ($action) {
         break;
     case "detail":
         $email = $_POST["email"];
-        $result = $Accounts->detail($email);
-        if ($result['message']) {
-            $message = $result['data'];
-        }
+        $message = $Accounts->detail($email);
         break;
     case "getByStatus":
         $message = $Accounts->getByStatus();
@@ -70,6 +67,6 @@ switch ($action) {
 }
 
 header('Content-Type: application/json; charset=utf-8');
-ob_clean();
-echo json_encode($message);
+// ob_clean();
+echo json_encode($message, JSON_NUMERIC_CHECK);
 ?>

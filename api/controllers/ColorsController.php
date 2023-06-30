@@ -20,10 +20,10 @@ switch ($action) {
     case "getAll":
         $message = $colors->getAll();
         break;
-    case "getDisplayCategories":
+    case "getUsedByPlants":
         $message = $colors->getUsedByPlants();
         break;
-    case "getSpecialCategories":
+    case "getUsedByTools":
         $message = $colors->getUsedByTools();
         break;
     // case "deleteAccount":
@@ -46,6 +46,6 @@ switch ($action) {
 }
 
 header('Content-Type: application/json; charset=utf-8');
-ob_clean();
-echo json_encode($message);
+// ob_clean();
+echo json_encode($message, JSON_NUMERIC_CHECK);
 ?>
