@@ -28,10 +28,10 @@ class Accounts extends Db
 
     public function isEmailExists($email)
     {
-        $sql = "SELECT count(*) as existsNumber FROM `accounts` WHERE email = ?";
+        $sql = "SELECT count(*) as existsNumber, role_id FROM `accounts` WHERE email = ?";
         $data = $this->select($sql, array($email));
         if ($data[0]['existsNumber'] > 0) {
-            return ['message' => true];
+            return ['message' => true, 'role_id' => $data[0]['role_id']];
         } else {
             return ['message' => false];
         }
@@ -39,18 +39,18 @@ class Accounts extends Db
 
     public function authenticate($email, $password)
     {
-        $sql = "SELECT account_id, password, salt FROM accounts where email = ?";
+        $sql = "SELECT account_id, password, salt, role_id FROM accounts where email = ?";
         $data = $this->select($sql, array($email));
         if (count($data) > 0) {
             $infoLogin = $data[0];
             $password = base64_decode($password);
             $result = verifyPassWord($password, $infoLogin['salt'], $infoLogin['password']);
-            return ['message' => $result, 'userId' => $infoLogin['account_id']];
+            return ['message' => $result, 'userId' => $infoLogin['account_id'], 'role_id' => $infoLogin['role_id']];
         } else {
             return ['message' => false];
         }
     }
-
+    
     public function insertAccount($address, $gender, $birthday, $phone, $passWord, $name, $email, $roleId)
     {
         $encodePassword = base64_decode($passWord);
