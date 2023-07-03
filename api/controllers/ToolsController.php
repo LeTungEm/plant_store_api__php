@@ -20,6 +20,9 @@ switch ($action) {
     case "getAll":
         $message = $tools->getAll();
         break;
+    case "getBriefInfo":
+        $message = $tools->getBriefInfo();
+        break;
     case "detail":
         $toolSlug = $_POST["toolSlug"];
         $message = $tools->detail($toolSlug);

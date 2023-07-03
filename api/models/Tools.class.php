@@ -9,6 +9,14 @@ class Tools extends Db
         return $this->select($sql);
     }
 
+    public function getBriefInfo()
+    {
+        $sql = "SELECT name, image, tool_id FROM `tools` where tools.tool_id <> 1 and tools.status = 1";
+        return $this->select($sql);
+    }
+
+
+
     public function detail($toolSlug)
     {
         $sql = "SELECT plant_set.plant_set_id, plant_set.plant_id, tools.name, tools.slug, plant_set.tool_quantity, tools.description,tools.score, tools.supplier_id, plant_set.image,plant_set.price,plant_set.is_sale,plant_set.sale_price, plant_set.tool_id, plant_set.tool_color_id, colors.name as color, colors.code as color_code, plant_set.tool_size_id, sizes.name as size FROM `plant_set` INNER JOIN `tools` on plant_set.tool_id = tools.tool_id INNER JOIN colors on colors.color_id = plant_set.tool_color_id INNER JOIN sizes on sizes.size_id = plant_set.tool_size_id WHERE tools.status = 1 and plant_set.plant_id = 1 and tools.slug = ?";
