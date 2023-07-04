@@ -9,6 +9,12 @@ class Plants extends Db
         return $this->select($sql);
     }
 
+    public function getVariantsById($plantId)
+    {
+        $sql = "SELECT plant_set.plant_id, tools.tool_id, tools.name, plant_set.image, plant_set.tool_quantity as quantity, CASE WHEN plant_set.is_sale = 1 THEN plant_set.sale_price ELSE plant_set.price END as price, colors.color_id, colors.name as color_name, sizes.size_id, sizes.name as size_name FROM `plant_set` INNER JOIN tools on plant_set.tool_id = tools.tool_id INNER JOIN colors on colors.color_id = plant_set.tool_color_id INNER JOIN sizes on sizes.size_id = plant_set.tool_size_id WHERE plant_set.status = 1 and plant_set.plant_id = ?;";
+        return $this->select($sql, array($plantId));
+    }
+
     public function detail($plantSlug)
     {
         $sql = "SELECT plant_set.plant_set_id, plants.plant_id, plants.name, plants.slug, plants.quantity as plant_quantity, plant_set.tool_quantity, plants.description,plants.score,plants.fun_fact,plants.light,plants.pet_friendly,plants.water,plants.sad_plant_signs,plants.supplier_id, plant_set.image,plant_set.price,plant_set.is_sale,plant_set.sale_price, plant_set.tool_id, tools.name as tool, plant_set.tool_color_id, colors.name as color, colors.code as color_code, plant_set.tool_size_id, sizes.name as size FROM `plants` INNER JOIN plant_set on plant_set.plant_id = plants.plant_id INNER JOIN tools on tools.tool_id = plant_set.tool_id INNER JOIN colors on colors.color_id = plant_set.tool_color_id INNER JOIN sizes on sizes.size_id = plant_set.tool_size_id WHERE plants.status = 1 and plants.slug = ?";
@@ -30,8 +36,6 @@ class Plants extends Db
             return ['message' => false];
         }
     }
-
-
 
     public function getByStatus()
     {

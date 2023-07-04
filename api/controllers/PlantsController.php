@@ -24,6 +24,10 @@ switch ($action) {
         $plantSlug = $_POST["plantSlug"];
         $message = $plants->detail($plantSlug);
         break;
+    case "getVariantsById":
+        $plantId = $_POST["plantId"];
+        $message = $plants->getVariantsById($plantId);
+        break;
     case "isSlugExist":
         $plantSlug = $_POST["plantSlug"];
         $message = $plants->isSlugExist($plantSlug);

@@ -30,9 +30,9 @@ switch ($action) {
     case "getByStatus":
         $message = $tools->getByStatus();
         break;
-    case "getByIds":
+    case "getVariantsByIds":
         $arrId = $_POST["arrId"];
-        $message = $tools->getByIds($arrId);
+        $message = $tools->getVariantsByIds($arrId);
         break;
     case "search":
         $search = $_POST["search"];

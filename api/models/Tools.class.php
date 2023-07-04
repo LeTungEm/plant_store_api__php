@@ -15,7 +15,7 @@ class Tools extends Db
         return $this->select($sql);
     }
 
-    public function getByIds($arrId)
+    public function getVariantsByIds($arrId)
     {
         $arrId = json_decode($arrId);
         if(count($arrId) > 0){
@@ -25,8 +25,6 @@ class Tools extends Db
             return $this->select($sql);
         }
     }
-
-
 
     public function detail($toolSlug)
     {
