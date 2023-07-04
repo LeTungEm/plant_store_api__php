@@ -5,7 +5,7 @@ class Plants extends Db
 {
     public function getAll()
     {
-        $sql = "SELECT plants.plant_id, plants.name, plants.slug, plants.description, plants.score, plants.fun_fact, plants.light,plants.pet_friendly,plants.water,plants.sad_plant_signs,plants.create_date,plants.update_date, plants.image, plants.quantity, plants.status, suppliers.name as supplier_name, GROUP_CONCAT(DISTINCT CONCAT(tools.name, ' ')) as tool FROM `plants` LEFT JOIN plant_set on plants.plant_id = plant_set.plant_id LEFT JOIN tools on tools.tool_id = plant_set.tool_id LEFT JOIN suppliers on plants.supplier_id = suppliers.supplier_id where plants.plant_id <> 1 GROUP BY plant_set.plant_id;";
+        $sql = "SELECT plants.plant_id, plants.name, plants.slug, plants.price, plants.description, plants.score, plants.fun_fact, plants.light,plants.pet_friendly,plants.water,plants.sad_plant_signs,plants.create_date,plants.update_date, plants.image, plants.quantity, plants.status, suppliers.name as supplier_name, GROUP_CONCAT(DISTINCT CONCAT(' ', tools.name)) as tool, cat_names.category_names FROM `plants` LEFT JOIN plant_set on plants.plant_id = plant_set.plant_id LEFT JOIN tools on tools.tool_id = plant_set.tool_id LEFT JOIN suppliers on plants.supplier_id = suppliers.supplier_id LEFT JOIN (select plants.plant_id, GROUP_CONCAT(DISTINCT CONCAT(' ', categories.name)) as category_names from plants INNER JOIN plants_categories on plants.plant_id = plants_categories.plant_id INNER JOIN categories on plants_categories.category_id = categories.category_id GROUP by plants.plant_id) as cat_names on plants.plant_id = cat_names.plant_id where plants.plant_id <> 1 GROUP BY plant_set.plant_id;";
         return $this->select($sql);
     }
 
@@ -46,7 +46,7 @@ class Plants extends Db
             return ['message' => false];
         }
     }
-    
+
     public function setPlantStatus($status, $plantId)
     {
         $sql = "UPDATE `plants` SET `status`= ? WHERE `plant_id` = ?";
