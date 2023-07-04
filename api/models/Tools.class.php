@@ -15,6 +15,17 @@ class Tools extends Db
         return $this->select($sql);
     }
 
+    public function getByIds($arrId)
+    {
+        $arrId = json_decode($arrId);
+        if(count($arrId) > 0){
+            $stringIds = implode(', ', $arrId);
+            $stringIds = '('.$stringIds.');';
+            $sql = "SELECT tools.tool_id, tools.name, plant_set.image, plant_set.tool_quantity as quantity, CASE WHEN plant_set.is_sale = 1 THEN plant_set.sale_price ELSE plant_set.price END as price, colors.color_id, colors.name as color_name, sizes.size_id, sizes.name as size_name FROM `plant_set` INNER JOIN tools on plant_set.tool_id = tools.tool_id INNER JOIN colors on colors.color_id = plant_set.tool_color_id INNER JOIN sizes on sizes.size_id = plant_set.tool_size_id WHERE plant_set.status = 1 and plant_set.plant_id = 1 and plant_set.tool_id in ".$stringIds;
+            return $this->select($sql);
+        }
+    }
+
 
 
     public function detail($toolSlug)
