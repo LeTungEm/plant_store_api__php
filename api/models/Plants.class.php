@@ -20,6 +20,19 @@ class Plants extends Db
         }
     }
 
+    public function isSlugExist($plantSlug)
+    {
+        $sql = "SELECT count(*) as slugCount from `plants` where plants.slug = ?";
+        $data = $this->select($sql, array($plantSlug));
+        if ($data[0]['slugCount'] > 0) {
+            return ['message' => true];
+        } else {
+            return ['message' => false];
+        }
+    }
+
+
+
     public function getByStatus()
     {
         $sql = "SELECT plants_categories.category_ids, plants.plant_id, plants.name, plants.slug, plants.score, GROUP_CONCAT(plant_set.tool_color_id) as tool_color, GROUP_CONCAT(colors.code) as color_code, GROUP_CONCAT(plant_set.tool_size_id) as tool_size, plants.image, COALESCE(max(plant_set.price),0) as max_price, COALESCE(min(plant_set.price),0) as min_price, `is_sale`, COALESCE(max(plant_set.sale_price),0) as max_sale_price, COALESCE(min(plant_set.sale_price),0) as min_sale_price FROM `plant_set` INNER JOIN plants on plant_set.plant_id = plants.plant_id INNER JOIN colors on colors.color_id = plant_set.tool_color_id INNER JOIN (SELECT plants.plant_id, GROUP_CONCAT(plants_categories.category_id) as category_ids FROM plants_categories INNER JOIN plants on plants.plant_id = plants_categories.plant_id GROUP BY plants.plant_id) as plants_categories on plant_set.plant_id = plants_categories.plant_id WHERE plants.status = 1 and plant_set.status = 1 GROUP BY plant_set.plant_id;";

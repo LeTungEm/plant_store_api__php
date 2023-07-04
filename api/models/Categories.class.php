@@ -3,7 +3,7 @@ class Categories extends Db
 {
     public function getAll()
     {
-        $sql = "SELECT * FROM `categories` where categories.slug not in ('cay','chau')";
+        $sql = "SELECT category_id, name FROM `categories` where categories.slug not in ('cay','chau') and status = 1";
         return $this->select($sql);
     }
 
