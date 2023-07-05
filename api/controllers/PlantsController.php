@@ -20,6 +20,10 @@ switch ($action) {
     case "getAll":
         $message = $plants->getAll();
         break;
+    case "getBySlug":
+        $plantSlug = $_POST["plantSlug"];
+        $message = $plants->getBySlug($plantSlug);
+        break;
     case "detail":
         $plantSlug = $_POST["plantSlug"];
         $message = $plants->detail($plantSlug);
