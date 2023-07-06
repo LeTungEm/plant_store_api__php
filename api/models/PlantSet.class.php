@@ -13,7 +13,7 @@ class PlantSet extends Db
             $price = $price + $plantPrice;
             $is_sale = isset($value->is_sale) ? $value->is_sale : 0;
             $sale_price = isset($value->sale_price) ? $value->sale_price : 0;
-            $sale_price = $is_sale == 1?$sale_price:0;
+            $sale_price = $is_sale == 1 ? $sale_price : 0;
 
             $arrValue[] = $image;
             $arrValue[] = $price;
@@ -47,5 +47,37 @@ class PlantSet extends Db
             return ['message' => false];
         }
     }
+
+    public function decreateQuantityWhenBuyPlant($plantSetId, $quantity)
+    {
+        $sql = "SELECT @plantSetId := ?;
+        SELECT @plantId := plants.plant_id, @minQuantity := CASE WHEN plant_set.tool_quantity >= plants.quantity then plants.quantity ELSE plant_set.tool_quantity end as quantity from plant_set INNER JOIN plants on plants.plant_id = plant_set.plant_id WHERE plant_set.plant_set_id = @plantSetId;
+        SELECT @saleQuantity := ?;
+        UPDATE `plants` SET `quantity` = quantity - @saleQuantity WHERE `plant_id` = @plantId and @minQuantity - @saleQuantity >= 0;
+        UPDATE `plant_set` SET plant_set.tool_quantity = plant_set.tool_quantity - @saleQuantity WHERE plant_set.plant_set_id = @plantSetId and @minQuantity - @saleQuantity >= 0;
+        ";
+        $result = $this->update($sql, array($plantSetId, $quantity));
+        if ($result['rowCount'] > 0) {
+            return ['message' => true];
+        } else {
+            return ['message' => false];
+        }
+    }
+
+
+
+
+
+    //     SELECT @plantSetId := 7;
+
+    // SELECT @plantId := plants.plant_id, @minQuantity := CASE WHEN plant_set.tool_quantity >= plants.quantity then plants.quantity ELSE plant_set.tool_quantity end as quantity from plant_set INNER JOIN plants on plants.plant_id = plant_set.plant_id WHERE plant_set.plant_set_id = @plantSetId;
+
+    // SELECT @saleQuantity := 2;
+
+    // UPDATE `plants` SET `quantity` = quantity - @saleQuantity WHERE `plant_id` = @plantId and @minQuantity - @saleQuantity >= 0;
+// UPDATE `plant_set` SET plant_set.tool_quantity = plant_set.tool_quantity - @saleQuantity WHERE plant_set.plant_set_id = @plantSetId and @minQuantity - @saleQuantity >= 0;
+
+
+
 }
 ?>
