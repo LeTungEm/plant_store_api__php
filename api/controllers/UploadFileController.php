@@ -7,18 +7,14 @@ $files = isset($_FILES["files"]) ? $_FILES["files"] : '';
 $imageNames = isset($_POST["names"]) ? $_POST["names"] : '';
 $path = '../../uploads/';
 
-// print_r($files);
-foreach ($files['tmp_name'] as $tmp_name) {
-    print_r($tmp_name);
-}
-foreach ($imageNames as $imageName) {
-    print_r($imageName);
+foreach ($files['tmp_name'] as $index => $tmp_name) {
+    $tmp = $tmp_name;
+    $imageName = $imageNames[$index];
+    if (move_uploaded_file($tmp, $path . $imageName)) {
+        echo json_encode(['message' => true]);
+    } else {
+        echo json_encode(['message' => false]);
+    }
 }
 
-
-// if (move_uploaded_file($file['tmp_name'], $path . $imageName)) {
-//     echo json_encode(['message' => true]);
-// } else {
-//     echo json_encode(['message' => false]);
-// }
 ?>

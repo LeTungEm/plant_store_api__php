@@ -45,22 +45,20 @@ switch ($action) {
         break;
     case "insertPlant":
         $name = $_POST["name"];
-        $price = $_POST["price"];
-        $isSale = $_POST["isSale"];
-        $salePrice = $_POST["salePrice"];
         $slug = $_POST["slug"];
-        $shortDescription = $_POST["shortDescription"];
+        $price = $_POST["price"];
         $description = $_POST["description"];
-        $funFact = $_POST["funFact"];
+        $score = $_POST["score"];
+        $fun_fact = $_POST["fun_fact"];
         $status = $_POST["status"];
-        $images = $_POST["images"];
+        $image = $_POST["image"];
         $light = $_POST["light"];
-        $petFriendly = $_POST["petFriendly"];
+        $pet_friendly = $_POST["pet_friendly"];
         $water = $_POST["water"];
-        $sadPlantSigns = $_POST["sadPlantSigns"];
-        $supplierId = $_POST["supplierId"];
-        
-        $message = $plants->insertPlant($name, $price, $isSale, $salePrice, $slug, $shortDescription, $description, $funFact, $status, $images, $light, $petFriendly, $water, $sadPlantSigns, $supplierId);
+        $sad_plant_signs = $_POST["sad_plant_signs"];
+        $supplier_id = $_POST["supplier_id"];
+        $quantity = $_POST["quantity"];
+        $message = $plants->insertPlant($name, $slug, $price, $description, $score, $fun_fact, $status, $image, $light, $pet_friendly, $water, $sad_plant_signs, $supplier_id, $quantity);
         break;
     case "setPlantStatus":
         $status = $_POST["status"];

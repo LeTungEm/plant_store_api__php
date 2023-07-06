@@ -21,7 +21,7 @@ class Tools extends Db
         if(count($arrId) > 0){
             $stringIds = implode(', ', $arrId);
             $stringIds = '('.$stringIds.');';
-            $sql = "SELECT tools.tool_id, tools.name, plant_set.image, plant_set.tool_quantity as quantity, CASE WHEN plant_set.is_sale = 1 THEN plant_set.sale_price ELSE plant_set.price END as price, colors.color_id, colors.name as color_name, sizes.size_id, sizes.name as size_name FROM `plant_set` INNER JOIN tools on plant_set.tool_id = tools.tool_id INNER JOIN colors on colors.color_id = plant_set.tool_color_id INNER JOIN sizes on sizes.size_id = plant_set.tool_size_id WHERE plant_set.status = 1 and plant_set.plant_id = 1 and plant_set.tool_id in ".$stringIds;
+            $sql = "SELECT tools.tool_id, tools.name, plant_set.image as tool_image, plant_set.tool_quantity as quantity, CASE WHEN plant_set.is_sale = 1 THEN plant_set.sale_price ELSE plant_set.price END as price, colors.color_id, colors.name as color_name, sizes.size_id, sizes.name as size_name FROM `plant_set` INNER JOIN tools on plant_set.tool_id = tools.tool_id INNER JOIN colors on colors.color_id = plant_set.tool_color_id INNER JOIN sizes on sizes.size_id = plant_set.tool_size_id WHERE plant_set.status = 1 and plant_set.plant_id = 1 and plant_set.tool_id in ".$stringIds;
             return $this->select($sql);
         }
     }
@@ -39,7 +39,7 @@ class Tools extends Db
 
     public function getByStatus()
     {
-        $sql = "SELECT tools_categories.category_ids,tools.tool_id , tools.name, tools.slug, tools.score, GROUP_CONCAT(plant_set.tool_color_id) as tool_color, GROUP_CONCAT(colors.code) as color_code, GROUP_CONCAT(plant_set.tool_size_id) as tool_size, tools.image, COALESCE(max(plant_set.price),0) as max_price, COALESCE(min(plant_set.price),0) as min_price, `is_sale`, COALESCE(max(plant_set.sale_price),0) as max_sale_price, COALESCE(min(plant_set.sale_price),0) as min_sale_price FROM `plant_set` INNER JOIN tools on plant_set.tool_id = tools.tool_id INNER JOIN colors on colors.color_id = plant_set.tool_color_id INNER JOIN (SELECT tools.tool_id, GROUP_CONCAT(tools_categories.category_id) as category_ids FROM tools_categories INNER JOIN tools on tools.tool_id = tools_categories.tool_id GROUP BY tools.tool_id) as tools_categories on plant_set.tool_id = tools_categories.tool_id WHERE tools.status = 1 and plant_set.plant_id = 1 and plant_set.status = 1 GROUP BY plant_set.tool_id;";
+        $sql = "SELECT COALESCE(tools_categories.category_ids, '') as category_ids, tools.tool_id , tools.name, tools.slug, tools.score, GROUP_CONCAT(plant_set.tool_color_id) as tool_color, GROUP_CONCAT(colors.code) as color_code, GROUP_CONCAT(plant_set.tool_size_id) as tool_size, tools.image, COALESCE(max(plant_set.price),0) as max_price, COALESCE(min(plant_set.price),0) as min_price, `is_sale`, COALESCE(max(plant_set.sale_price),0) as max_sale_price, COALESCE(min(plant_set.sale_price),0) as min_sale_price FROM `plant_set` INNER JOIN tools on plant_set.tool_id = tools.tool_id INNER JOIN colors on colors.color_id = plant_set.tool_color_id LEFT JOIN (SELECT tools.tool_id, GROUP_CONCAT(tools_categories.category_id) as category_ids FROM tools_categories INNER JOIN tools on tools.tool_id = tools_categories.tool_id GROUP BY tools.tool_id) as tools_categories on plant_set.tool_id = tools_categories.tool_id WHERE tools.status = 1 and plant_set.plant_id = 1 and plant_set.status = 1 GROUP BY plant_set.tool_id;";
         return $this->select($sql);
     }
 
