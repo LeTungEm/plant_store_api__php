@@ -86,6 +86,19 @@ class Plants extends Db
         }
     }
 
+    public function deletePlant($plantId)
+    {
+        $sql = "DELETE FROM `plants` WHERE `plant_id` = ?";
+        $result = $this->delete($sql, array($plantId));
+        if ($result['rowCount'] > 0) {
+            return ['message' => true];
+        } else {
+            return ['message' => false];
+        }
+    }
+
+
+
     // public function deleteAccount($email)
     // {
     //     $sql = "UPDATE `accounts` SET `status`= 0 WHERE `email` = ?";

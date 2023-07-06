@@ -18,8 +18,17 @@ $plantsCategories = new PlantsCategories();
 $message = array();
 switch ($action) {
     case "getByCategoriesSlug":
-        $categorySlug =  $_POST["categorySlug"];
+        $categorySlug = $_POST["categorySlug"];
         $message = $plantsCategories->getByCategoriesSlug($categorySlug);
+        break;
+    case "insertPlantCategories":
+        $plantId = $_POST["plantId"];
+        $listCategory = $_POST["listCategory"];
+        $message = $plantsCategories->insertPlantCategories($plantId, $listCategory);
+        break;
+    case "deletePlantCategoriesByPlantId":
+        $plantId = $_POST["plantId"];
+        $message = $plantsCategories->deletePlantCategoriesByPlantId($plantId);
         break;
     default:
         $message = "action is not found";

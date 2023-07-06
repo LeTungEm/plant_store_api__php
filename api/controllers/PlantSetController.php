@@ -23,6 +23,10 @@ switch ($action) {
         $listTool =  $_POST["listTool"];
         $message = $plantSet->insertPlantSet($plantId, $plantPrice, $listTool);
         break;
+    case "deletePlantSetByPlantId":
+        $plantId =  $_POST["plantId"];
+        $message = $plantSet->deletePlantSetByPlantId($plantId);
+        break;
     default:
         $message = "action is not found";
         break;

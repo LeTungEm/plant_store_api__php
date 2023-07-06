@@ -65,6 +65,10 @@ switch ($action) {
         $plantId = $_POST["plantId"];
         $message = $plants->setPlantStatus($status, $plantId);
         break;
+    case "deletePlant":
+        $plantId = $_POST["plantId"];
+        $message = $plants->deletePlant($plantId);
+        break;
     // case "deleteAccount":
     //     $email = $_POST["email"];
     //     $message = $plants->deleteAccount($email) > 0;
