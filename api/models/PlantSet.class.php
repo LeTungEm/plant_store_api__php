@@ -55,28 +55,61 @@ class PlantSet extends Db
         $planSetArr = json_decode($listPlantSetId);
         if (count($planSetArr) > 0) {
             $planSetArr = '('.implode(", ", $planSetArr).')';
-            $sql = "SELECT plant_set.plant_set_id, CASE WHEN plant_set.plant_id = 1 THEN plant_set.tool_quantity ELSE CASE WHEN plant_set.tool_quantity >= plants.quantity THEN plants.quantity ELSE plant_set.tool_quantity END END as available_quantity FROM plant_set INNER JOIN plants on plant_set.plant_id = plants.plant_id WHERE plant_set.plant_set_id in ".$planSetArr;
+            $sql = "SELECT plant_set.plant_set_id, CASE WHEN plant_set.plant_id = 1 THEN plant_set.tool_quantity ELSE CASE WHEN plant_set.tool_quantity >= plants.quantity THEN plants.quantity ELSE plant_set.tool_quantity END END as available_quantity FROM plant_set INNER JOIN plants on plant_set.plant_id = plants.plant_id WHERE plant_set.status = 1 and plant_set.plant_set_id in ".$planSetArr;
             return $this->select($sql);
+        }
+    }
+
+    public function setStatusByPlantId($status, $plantId)
+    {
+        $sql = "UPDATE `plant_set` SET `status`= ? WHERE `plant_id` = ?";
+        $result = $this->update($sql, array($status, $plantId));
+        if ($result['rowCount'] > 0) {
+            return ['message' => true];
+        } else {
+            return ['message' => false];
         }
     }
 
 
 
-    // public function decreateQuantityWhenBuyPlant($plantSetId, $quantity)
-    // {
-    //     $sql = "SELECT @plantSetId := ?;
-    //     SELECT @plantId := plants.plant_id, @minQuantity := CASE WHEN plant_set.tool_quantity >= plants.quantity then plants.quantity ELSE plant_set.tool_quantity end as quantity from plant_set INNER JOIN plants on plants.plant_id = plant_set.plant_id WHERE plant_set.plant_set_id = @plantSetId;
-    //     SELECT @saleQuantity := ?;
-    //     UPDATE `plants` SET `quantity` = quantity - @saleQuantity WHERE `plant_id` = @plantId and @minQuantity - @saleQuantity >= 0;
-    //     UPDATE `plant_set` SET plant_set.tool_quantity = plant_set.tool_quantity - @saleQuantity WHERE plant_set.plant_set_id = @plantSetId and @minQuantity - @saleQuantity >= 0;
-    //     ";
-    //     $result = $this->update($sql, array($plantSetId, $quantity));
-    //     if ($result['rowCount'] > 0) {
-    //         return ['message' => true];
-    //     } else {
-    //         return ['message' => false];
-    //     }
-    // }
+    public function decreateQuantityWhenBuyPlant($plantSetId, $quantity)
+    {
+
+        $arr = array(1,2,3,4,5);
+        $arrValue = array();
+        $sql = "        
+        UPDATE `plant_set` SET plant_set.tool_quantity = plant_set.tool_quantity - ? WHERE plant_set.plant_set_id = ? and (SELECT @minQuantity := CASE WHEN plant_set.tool_quantity >= plants.quantity then plants.quantity ELSE plant_set.tool_quantity end as quantity from plant_set INNER JOIN plants on plants.plant_id = plant_set.plant_id WHERE plant_set.plant_set_id = ?) - ? >= 0;
+                
+        UPDATE `plants` SET `quantity` = quantity - ? WHERE `plant_id` = (SELECT plant_set.plant_id FROM plant_set WHERE plant_set.plant_set_id = ?) and @minQuantity - ? >= 0;
+        ";
+        $stringSql = '';
+
+        if (count($arr) > 0) {
+            foreach ($arr as $value) {
+                // $arrValue[] = $value->quantity;
+                // $arrValue[] = $value->plantSetId;
+                // $arrValue[] = $value->plantSetId;
+                // $arrValue[] = $value->quantity;
+                // $arrValue[] = $value->quantity;
+                // $arrValue[] = $value->plantSetId;
+                // $arrValue[] = $value->quantity;
+                $stringSql = $stringSql.$sql;
+            }
+
+        }
+
+        echo $stringSql;
+        var_dump($arrValue);
+
+       
+        // $result = $this->update($stringSql, $arrValue);
+        // if ($result['rowCount'] > 0) {
+        //     return ['message' => true, 'rowCount' => $result['rowCount']];
+        // } else {
+        //     return ['message' => false];
+        // }
+    }
 
 
 }
