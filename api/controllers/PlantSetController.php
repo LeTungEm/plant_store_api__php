@@ -27,6 +27,10 @@ switch ($action) {
         $plantId =  $_POST["plantId"];
         $message = $plantSet->deletePlantSetByPlantId($plantId);
         break;
+    case "getAvailableQuantity":
+        $listPlantSetId =  $_POST["listPlantSetId"];
+        $message = $plantSet->getAvailableQuantity($listPlantSetId);
+        break;
     default:
         $message = "action is not found";
         break;
