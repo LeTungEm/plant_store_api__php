@@ -102,6 +102,8 @@ class PlantSet extends Db
         echo $stringSql;
         var_dump($arrValue);
 
+        // Thêm transaction 
+
        
         // $result = $this->update($stringSql, $arrValue);
         // if ($result['rowCount'] > 0) {
