@@ -29,13 +29,11 @@ class Db
 
 	private function query($sql, $arr = array(), $mode = PDO::FETCH_ASSOC)
 	{
-		$this->dbh->beginTransaction();
 		$stm = $this->dbh->prepare($sql);
 		if (!$stm->execute($arr)) {
 			return null;
 		}
 		$this->_numRow = $stm->rowCount();
-		$this->dbh->commit();
 		return $stm->fetchAll($mode);
 
 	}

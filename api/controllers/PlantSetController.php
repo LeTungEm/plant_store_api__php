@@ -27,6 +27,14 @@ switch ($action) {
         $plantId =  $_POST["plantId"];
         $message = $plantSet->deletePlantSetByPlantId($plantId);
         break;
+    case "deletePlantSetByPlantSetId":
+        $listPlantSetRemoveId =  $_POST["listPlantSetRemoveId"];
+        $message = $plantSet->deletePlantSetByPlantSetId($listPlantSetRemoveId);
+        break;
+    case "updatePlantSet":
+        $listVariant =  $_POST["listVariant"];
+        $message = $plantSet->updatePlantSet($listVariant);
+        break;
     case "getAvailableQuantity":
         $listPlantSetId =  $_POST["listPlantSetId"];
         $message = $plantSet->getAvailableQuantity($listPlantSetId);

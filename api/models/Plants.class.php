@@ -86,6 +86,17 @@ class Plants extends Db
         }
     }
 
+    public function updatePlant($name, $slug, $price, $description, $fun_fact, $status, $image, $light, $pet_friendly, $water, $sad_plant_signs, $supplier_id, $quantity, $plant_id)
+    {
+        $sql = "UPDATE `plants` SET `name`= ?,`slug`= ?,`price`= ?,`description`= ?,`fun_fact`= ?,`status`= ?,`image`= ?,`light`= ?,`pet_friendly`= ?,`water`= ?,`sad_plant_signs`= ?,`supplier_id`= ?,`quantity`= ? WHERE `plant_id` = ?";
+        $result = $this->update($sql, array($name, $slug, $price, $description, $fun_fact, $status, $image, $light, $pet_friendly, $water, $sad_plant_signs, $supplier_id, $quantity, $plant_id));
+        if ($result['rowCount'] > 0) {
+            return ['message' => true];
+        } else {
+            return ['message' => false];
+        }
+    }
+
     public function deletePlant($plantId)
     {
         $sql = "DELETE FROM `plants` WHERE `plant_id` = ?";

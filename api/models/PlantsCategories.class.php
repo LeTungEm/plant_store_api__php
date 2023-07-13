@@ -12,19 +12,24 @@ class PlantsCategories extends Db
         $listCategory = json_decode($listCategory);
         $arrValueForm = array();
         $arrValue = array();
-        foreach ($listCategory as $value) {
-            $arrValue[] = $value;
-            $arrValue[] = $plantId;
-            $arrValueForm[] = '(?,?)';
-        }
+        if (count($listCategory) > 0) {
+            foreach ($listCategory as $value) {
+                $arrValue[] = $value;
+                $arrValue[] = $plantId;
+                $arrValueForm[] = '(?,?)';
+            }
 
-        $sql = "INSERT INTO `plants_categories`(`category_id`, `plant_id`) VALUES " . implode(", ", $arrValueForm) . ';';
-        $result = $this->insert($sql, $arrValue);
-        if ($result['rowCount'] > 0) {
-            return ['message' => true, 'rowCount' => $result['rowCount']];
+            $sql = "INSERT INTO `plants_categories`(`category_id`, `plant_id`) VALUES " . implode(", ", $arrValueForm) . ';';
+            $result = $this->insert($sql, $arrValue);
+            if ($result['rowCount'] > 0) {
+                return ['message' => true, 'rowCount' => $result['rowCount']];
+            } else {
+                return ['message' => false];
+            }
         } else {
             return ['message' => false];
         }
+
     }
 
     public function deletePlantCategoriesByPlantId($plantId)
@@ -36,6 +41,15 @@ class PlantsCategories extends Db
         } else {
             return ['message' => false];
         }
+    }
+
+    public function updatePlantCategoriesByPlantId($plantId, $listCategory){
+        $this->deletePlantCategoriesByPlantId($plantId);
+        $result = $this->insertPlantCategories($plantId, $listCategory);
+        if($result['message']){
+            return $result;
+        }
+        return ['message' => false];
     }
 }
 ?>

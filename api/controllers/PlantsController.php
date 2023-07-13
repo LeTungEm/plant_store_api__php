@@ -60,6 +60,24 @@ switch ($action) {
         $quantity = $_POST["quantity"];
         $message = $plants->insertPlant($name, $slug, $price, $description, $score, $fun_fact, $status, $image, $light, $pet_friendly, $water, $sad_plant_signs, $supplier_id, $quantity);
         break;
+    case "updatePlant":
+        $name = $_POST["name"];
+        $slug = $_POST["slug"];
+        $price = $_POST["price"];
+        $description = $_POST["description"];
+        $fun_fact = $_POST["fun_fact"];
+        $status = $_POST["status"];
+        $image = $_POST["image"];
+        $light = $_POST["light"];
+        $pet_friendly = $_POST["pet_friendly"];
+        $water = $_POST["water"];
+        $sad_plant_signs = $_POST["sad_plant_signs"];
+        $supplier_id = $_POST["supplier_id"];
+        $quantity = $_POST["quantity"];
+        $plant_id = $_POST["plant_id"];
+
+        $message = $plants->updatePlant($name, $slug, $price, $description, $fun_fact, $status, $image, $light, $pet_friendly, $water, $sad_plant_signs, $supplier_id, $quantity, $plant_id);
+        break;
     case "setPlantStatus":
         $status = $_POST["status"];
         $plantId = $_POST["plantId"];

@@ -54,8 +54,8 @@ class PlantSet extends Db
     {
         $planSetArr = json_decode($listPlantSetId);
         if (count($planSetArr) > 0) {
-            $planSetArr = '('.implode(", ", $planSetArr).')';
-            $sql = "SELECT plant_set.plant_set_id, CASE WHEN plant_set.plant_id = 1 THEN plant_set.tool_quantity ELSE CASE WHEN plant_set.tool_quantity >= plants.quantity THEN plants.quantity ELSE plant_set.tool_quantity END END as available_quantity FROM plant_set INNER JOIN plants on plant_set.plant_id = plants.plant_id WHERE plant_set.status = 1 and plant_set.plant_set_id in ".$planSetArr;
+            $planSetArr = '(' . implode(", ", $planSetArr) . ')';
+            $sql = "SELECT plant_set.plant_set_id, CASE WHEN plant_set.plant_id = 1 THEN plant_set.tool_quantity ELSE CASE WHEN plant_set.tool_quantity >= plants.quantity THEN plants.quantity ELSE plant_set.tool_quantity END END as available_quantity FROM plant_set INNER JOIN plants on plant_set.plant_id = plants.plant_id WHERE plant_set.status = 1 and plant_set.plant_set_id in " . $planSetArr;
             return $this->select($sql);
         }
     }
@@ -71,12 +71,60 @@ class PlantSet extends Db
         }
     }
 
+    public function deletePlantSetByPlantSetId($listPlantSetRemoveId)
+    {
+        $planSetIdArr = json_decode($listPlantSetRemoveId);
+        if (count($planSetIdArr) > 0) {
+            $planSetIdArr = '(' . implode(", ", $planSetIdArr) . ')';
+            $sql = "DELETE FROM `plant_set` WHERE `plant_set_id` in " . $planSetIdArr;
+            $result = $this->delete($sql);
+            if ($result['rowCount'] > 0) {
+                return ['message' => true];
+            } else {
+                return ['message' => false];
+            }
+        } else {
+            return ['message' => false];
+        }
+    }
+
+    public function updatePlantSet($listVariant)
+    {
+        $planSets = json_decode($listVariant);
+        $planSetIdArr = [];
+        $arrImageForm = '';
+        $arrIsSale = '';
+        $arrSalePrice = '';
+        if (count($planSets) > 0) {
+            foreach ($planSets as $value) {
+                $arrImageForm .= " WHEN `plant_set_id` = " . $value->plant_set_id . " THEN '" . $value->image."'";
+                $arrIsSale .= " WHEN `plant_set_id` =".$value->plant_set_id." THEN ".$value->is_sale;
+                $arrSalePrice .= " WHEN `plant_set_id` =".$value->plant_set_id." THEN ".$value->sale_price;
+                $planSetIdArr[] = $value->plant_set_id;
+            }
+
+            $planSetIdArr = "(".implode(", ", $planSetIdArr).")";
+
+            $sql = "UPDATE `plant_set` SET `image` = CASE ".$arrImageForm." END, `is_sale` = CASE ".$arrIsSale." END, `sale_price` = CASE ".$arrSalePrice." END WHERE `plant_set_id` in " . $planSetIdArr;
+            $result = $this->delete($sql);
+            if ($result['rowCount'] > 0) {
+                return ['message' => true];
+            } else {
+                return ['message' => false];
+            }
+
+
+        } else {
+            return ['message' => false];
+        }
+    }
+
 
 
     public function decreateQuantityWhenBuyPlant($plantSetId, $quantity)
     {
 
-        $arr = array(1,2,3,4,5);
+        $arr = array(1, 2, 3, 4, 5);
         $arrValue = array();
         $sql = "        
         UPDATE `plant_set` SET plant_set.tool_quantity = plant_set.tool_quantity - ? WHERE plant_set.plant_set_id = ? and (SELECT @minQuantity := CASE WHEN plant_set.tool_quantity >= plants.quantity then plants.quantity ELSE plant_set.tool_quantity end as quantity from plant_set INNER JOIN plants on plants.plant_id = plant_set.plant_id WHERE plant_set.plant_set_id = ?) - ? >= 0;
@@ -94,7 +142,7 @@ class PlantSet extends Db
                 // $arrValue[] = $value->quantity;
                 // $arrValue[] = $value->plantSetId;
                 // $arrValue[] = $value->quantity;
-                $stringSql = $stringSql.$sql;
+                $stringSql = $stringSql . $sql;
             }
 
         }
@@ -104,13 +152,14 @@ class PlantSet extends Db
 
         // Thêm transaction 
 
-       
+
         // $result = $this->update($stringSql, $arrValue);
         // if ($result['rowCount'] > 0) {
         //     return ['message' => true, 'rowCount' => $result['rowCount']];
         // } else {
-        //     return ['message' => false];
+        return ['message' => false];
         // }
+
     }
 
 

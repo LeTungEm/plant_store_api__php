@@ -26,6 +26,11 @@ switch ($action) {
         $listCategory = $_POST["listCategory"];
         $message = $plantsCategories->insertPlantCategories($plantId, $listCategory);
         break;
+    case "updatePlantCategoriesByPlantId":
+        $plantId = $_POST["plantId"];
+        $listCategory = $_POST["listCategory"];
+        $message = $plantsCategories->updatePlantCategoriesByPlantId($plantId, $listCategory);
+        break;
     case "deletePlantCategoriesByPlantId":
         $plantId = $_POST["plantId"];
         $message = $plantsCategories->deletePlantCategoriesByPlantId($plantId);
