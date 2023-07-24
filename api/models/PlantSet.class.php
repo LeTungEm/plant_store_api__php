@@ -8,6 +8,10 @@ class PlantSet extends Db
         $queryProductType = '';
         $priceQuery = '';
         $distinctQuery = '';
+        $colorQuery = '';
+        if($colorId != 0){
+            $colorQuery = " AND plant_set.tool_color_id = " . $colorId;
+        }
         if ($productType == 1) {
             $queryProductType = "plant_set.plant_id = 1";
         } else {
@@ -24,7 +28,7 @@ class PlantSet extends Db
             $selectedId = "(" . implode(',', $encodeSelectedId) . ")";
             $distinctQuery = " AND plant_set.plant_set_id not in " . $selectedId;
         }
-        $sql = "SELECT CASE WHEN plant_set.plant_id = 1 THEN plant_set.tool_quantity ELSE CASE WHEN plants.quantity >= plant_set.tool_quantity THEN plant_set.tool_quantity ELSE plants.quantity END END as max_quantity, CASE WHEN plant_set.plant_id = 1 THEN GROUP_CONCAT(CONCAT(tools.name, ' / ', colors.name, ' / ', sizes.name)) ELSE GROUP_CONCAT(CONCAT(plants.name, ' / ' , tools.name, ' / ', colors.name, ' / ', sizes.name)) END AS name,t_price.price, plant_set.`plant_set_id`, plant_set.`image` FROM (SELECT plant_set_id, CASE WHEN is_sale = 1 THEN sale_price ELSE price end as price FROM `plant_set`) AS t_price INNER JOIN plant_set ON plant_set.plant_set_id = t_price.plant_set_id INNER JOIN plants ON plants.plant_id = plant_set.plant_id INNER JOIN tools ON tools.tool_id = plant_set.tool_id INNER JOIN colors ON colors.color_id = plant_set.tool_color_id INNER JOIN sizes ON sizes.size_id = plant_set.tool_size_id WHERE " . $priceQuery . " AND " . $queryProductType . " AND plant_set.tool_color_id = " . $colorId ." ".$distinctQuery. " GROUP BY plant_set.plant_set_id HAVING name like " . $name;
+        $sql = "SELECT CASE WHEN plant_set.plant_id = 1 THEN plant_set.tool_quantity ELSE CASE WHEN plants.quantity >= plant_set.tool_quantity THEN plant_set.tool_quantity ELSE plants.quantity END END as max_quantity, CASE WHEN plant_set.plant_id = 1 THEN GROUP_CONCAT(CONCAT(tools.name, ' / ', colors.name, ' / ', sizes.name)) ELSE GROUP_CONCAT(CONCAT(plants.name, ' / ' , tools.name, ' / ', colors.name, ' / ', sizes.name)) END AS name,t_price.price, plant_set.`plant_set_id`, plant_set.`image` FROM (SELECT plant_set_id, CASE WHEN is_sale = 1 THEN sale_price ELSE price end as price FROM `plant_set`) AS t_price INNER JOIN plant_set ON plant_set.plant_set_id = t_price.plant_set_id INNER JOIN plants ON plants.plant_id = plant_set.plant_id INNER JOIN tools ON tools.tool_id = plant_set.tool_id INNER JOIN colors ON colors.color_id = plant_set.tool_color_id INNER JOIN sizes ON sizes.size_id = plant_set.tool_size_id WHERE " . $priceQuery . " AND " . $queryProductType . " ".$colorQuery ." ".$distinctQuery. " GROUP BY plant_set.plant_set_id HAVING name like " . $name;
         return $this->select($sql);
     }
 
