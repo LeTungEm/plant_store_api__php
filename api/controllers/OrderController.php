@@ -20,6 +20,18 @@ switch ($action) {
     case "getAll":
         $message = $order->getAll();
         break;
+    case "getByOrderId":
+        $orderId = $_POST["orderId"];
+        $message = $order->getByOrderId($orderId);
+        break;
+    case "getAllByAccountId":
+        $accountId = $_POST["accountId"];
+        $message = $order->getAllByAccountId($accountId);
+        break;
+    case "cancelOrder":
+        $orderId = $_POST["orderId"];
+        $message = $order->cancelOrder($orderId);
+        break;
     case "insertOrder":
         $transportFee = $_POST["transportFee"];
         $nameReceiver = $_POST["nameReceiver"];

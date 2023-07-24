@@ -1,6 +1,33 @@
 <?php
 class PlantSet extends Db
 {
+
+    public function getAll($price, $colorId, $productType, $name, $selectedId)
+    {
+        $name = "'%" . $name . "%'";
+        $queryProductType = '';
+        $priceQuery = '';
+        $distinctQuery = '';
+        if ($productType == 1) {
+            $queryProductType = "plant_set.plant_id = 1";
+        } else {
+            $queryProductType = "plant_set.plant_id <> 1";
+        }
+        if ($price < 3000000) {
+            $priceQuery = "t_price.price > " . $price . " AND t_price.price <= " . intval($price + 200000);
+        } else {
+            $priceQuery = "t_price.price > " . $price;
+        }
+
+        $encodeSelectedId = json_decode($selectedId);
+        if (count($encodeSelectedId) > 0) {
+            $selectedId = "(" . implode(',', $encodeSelectedId) . ")";
+            $distinctQuery = " AND plant_set.plant_set_id not in " . $selectedId;
+        }
+        $sql = "SELECT CASE WHEN plant_set.plant_id = 1 THEN plant_set.tool_quantity ELSE CASE WHEN plants.quantity >= plant_set.tool_quantity THEN plant_set.tool_quantity ELSE plants.quantity END END as max_quantity, CASE WHEN plant_set.plant_id = 1 THEN GROUP_CONCAT(CONCAT(tools.name, ' / ', colors.name, ' / ', sizes.name)) ELSE GROUP_CONCAT(CONCAT(plants.name, ' / ' , tools.name, ' / ', colors.name, ' / ', sizes.name)) END AS name,t_price.price, plant_set.`plant_set_id`, plant_set.`image` FROM (SELECT plant_set_id, CASE WHEN is_sale = 1 THEN sale_price ELSE price end as price FROM `plant_set`) AS t_price INNER JOIN plant_set ON plant_set.plant_set_id = t_price.plant_set_id INNER JOIN plants ON plants.plant_id = plant_set.plant_id INNER JOIN tools ON tools.tool_id = plant_set.tool_id INNER JOIN colors ON colors.color_id = plant_set.tool_color_id INNER JOIN sizes ON sizes.size_id = plant_set.tool_size_id WHERE " . $priceQuery . " AND " . $queryProductType . " AND plant_set.tool_color_id = " . $colorId ." ".$distinctQuery. " GROUP BY plant_set.plant_set_id HAVING name like " . $name;
+        return $this->select($sql);
+    }
+
     public function insertPlantSet($plantId, $plantPrice, $listTool)
     {
 
@@ -71,12 +98,23 @@ class PlantSet extends Db
         }
     }
 
+    public function setStatusByToolId($status, $toolId)
+    {
+        $sql = "UPDATE `plant_set` SET `status`= ? WHERE `tool_id` = ?";
+        $result = $this->update($sql, array($status, $toolId));
+        if ($result['rowCount'] > 0) {
+            return ['message' => true];
+        } else {
+            return ['message' => false];
+        }
+    }
+
     public function deletePlantSetByPlantSetId($listPlantSetRemoveId)
     {
         $planSetIdArr = json_decode($listPlantSetRemoveId);
         if (count($planSetIdArr) > 0) {
             $planSetIdArr = '(' . implode(", ", $planSetIdArr) . ')';
-            $sql = "DELETE FROM `plant_set` WHERE `plant_set_id` in " . $planSetIdArr;
+            $sql = "UPDATE `plant_set` SET `status`= 0 WHERE `plant_set_id` in " . $planSetIdArr;
             $result = $this->delete($sql);
             if ($result['rowCount'] > 0) {
                 return ['message' => true];
@@ -84,29 +122,32 @@ class PlantSet extends Db
                 return ['message' => false];
             }
         } else {
-            return ['message' => false];
+            return ['message' => false, 'err' => true];
         }
     }
 
-    public function updatePlantSet($listVariant)
+    public function updatePlantSet($listVariant, $plantPrice)
     {
         $planSets = json_decode($listVariant);
         $planSetIdArr = [];
         $arrImageForm = '';
         $arrIsSale = '';
         $arrSalePrice = '';
+        $arrPrice = '';
         if (count($planSets) > 0) {
             foreach ($planSets as $value) {
-                $arrImageForm .= " WHEN `plant_set_id` = " . $value->plant_set_id . " THEN '" . $value->image."'";
-                $arrIsSale .= " WHEN `plant_set_id` =".$value->plant_set_id." THEN ".$value->is_sale;
-                $arrSalePrice .= " WHEN `plant_set_id` =".$value->plant_set_id." THEN ".$value->sale_price;
+                $arrImageForm .= " WHEN `plant_set_id` = " . $value->plant_set_id . " THEN '" . $value->image . "'";
+                $arrIsSale .= " WHEN `plant_set_id` = " . $value->plant_set_id . " THEN " . $value->is_sale;
+                $arrSalePrice .= " WHEN `plant_set_id` = " . $value->plant_set_id . " THEN " . ($value->sale_price == 0 ? 'null' : $value->sale_price);
+                $arrPrice .= " WHEN `plant_set_id` = " . $value->plant_set_id . " THEN " . ($value->tool_price + $plantPrice);
                 $planSetIdArr[] = $value->plant_set_id;
             }
 
-            $planSetIdArr = "(".implode(", ", $planSetIdArr).")";
+            $planSetIdArr = "(" . implode(", ", $planSetIdArr) . ")";
 
-            $sql = "UPDATE `plant_set` SET `image` = CASE ".$arrImageForm." END, `is_sale` = CASE ".$arrIsSale." END, `sale_price` = CASE ".$arrSalePrice." END WHERE `plant_set_id` in " . $planSetIdArr;
-            $result = $this->delete($sql);
+            $sql = "UPDATE `plant_set` SET `price` = CASE " . $arrPrice . " END,`image` = CASE " . $arrImageForm . " END, `is_sale` = CASE " . $arrIsSale . " END, `sale_price` = CASE " . $arrSalePrice . " END, `status` = 1 WHERE `plant_set_id` in " . $planSetIdArr;
+            echo $sql;
+            $result = $this->update($sql);
             if ($result['rowCount'] > 0) {
                 return ['message' => true];
             } else {

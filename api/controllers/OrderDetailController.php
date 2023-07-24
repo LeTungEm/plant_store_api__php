@@ -20,6 +20,10 @@ switch ($action) {
     case "getAll":
         $message = $orderDetail->getAll();
         break;
+    case "getByOrderId":
+        $orderId = $_POST["orderId"];
+        $message = $orderDetail->getByOrderId($orderId);
+        break;
     case "insertOrderDetail":
         $orderId = $_POST["orderId"];
         $orderDetails = $_POST["orderDetail"];

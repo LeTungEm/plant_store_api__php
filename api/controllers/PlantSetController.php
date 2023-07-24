@@ -17,6 +17,14 @@ $action = isset($_POST["action"]) ? $_POST["action"] : '';
 $plantSet = new PlantSet();
 $message = array();
 switch ($action) {
+    case "getAll":
+        $price =  $_POST["price"];
+        $colorId =  $_POST["colorId"];
+        $productType =  $_POST["productType"];
+        $name =  $_POST["name"];
+        $selectedId =  $_POST["selectedId"];
+        $message = $plantSet->getAll($price, $colorId, $productType, $name, $selectedId);
+        break;
     case "insertPlantSet":
         $plantId =  $_POST["plantId"];
         $plantPrice =  $_POST["plantPrice"];
@@ -33,7 +41,8 @@ switch ($action) {
         break;
     case "updatePlantSet":
         $listVariant =  $_POST["listVariant"];
-        $message = $plantSet->updatePlantSet($listVariant);
+        $plantPrice =  $_POST["plantPrice"];
+        $message = $plantSet->updatePlantSet($listVariant, $plantPrice);
         break;
     case "getAvailableQuantity":
         $listPlantSetId =  $_POST["listPlantSetId"];
@@ -43,6 +52,11 @@ switch ($action) {
         $status =  $_POST["status"];
         $plantId =  $_POST["plantId"];
         $message = $plantSet->setStatusByPlantId($status, $plantId);
+        break;
+    case "setStatusByToolId":
+        $status =  $_POST["status"];
+        $toolId =  $_POST["toolId"];
+        $message = $plantSet->setStatusByToolId($status, $toolId);
         break;
     case "decreateQuantityWhenBuyPlant":
         $plantSetId =  $_POST["plantSetId"];

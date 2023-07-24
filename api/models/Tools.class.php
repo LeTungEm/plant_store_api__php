@@ -5,7 +5,7 @@ class Tools extends Db
 {
     public function getAll()
     {
-        $sql = "SELECT * FROM `tools`";
+        $sql = "SELECT tools.tool_id, tools.name, tools.slug, GROUP_CONCAT(DISTINCT CONCAT(' ', plant_set.price)) as tool_prices, tools.description, tools.score, tools.create_date, tools.update_date, tools.image, plant_set.tool_quantity, tools.status, suppliers.name as supplier_name, cat_names.category_names, GROUP_CONCAT(DISTINCT CONCAT(' ', colors.name)) as tool_colors, GROUP_CONCAT(DISTINCT CONCAT(' ', sizes.name)) as tool_sizes FROM `tools` LEFT JOIN plant_set on tools.tool_id = plant_set.tool_id LEFT JOIN suppliers on tools.supplier_id = suppliers.supplier_id LEFT JOIN (select tools.tool_id, GROUP_CONCAT(DISTINCT CONCAT(' ', categories.name)) as category_names from tools INNER JOIN tools_categories on tools.tool_id = tools_categories.tool_id INNER JOIN categories on tools_categories.category_id = categories.category_id GROUP by tools.tool_id) as cat_names on tools.tool_id = cat_names.tool_id LEFT JOIN colors ON plant_set.tool_color_id = colors.color_id LEFT JOIN sizes on plant_set.tool_size_id = sizes.size_id where tools.tool_id <> 1 and plant_set.plant_id = 1 GROUP BY tools.tool_id;";
         return $this->select($sql);
     }
 
@@ -51,6 +51,17 @@ class Tools extends Db
         $search = '%' . $search . '%';
         $sql = "SELECT COALESCE(tools_categories.category_ids, '') as category_ids, tools.tool_id , tools.name, tools.slug, tools.score, GROUP_CONCAT(plant_set.tool_color_id) as tool_color, GROUP_CONCAT(colors.code) as color_code, GROUP_CONCAT(plant_set.tool_size_id) as tool_size, tools.image, COALESCE(max(plant_set.price),0) as max_price, COALESCE(min(plant_set.price),0) as min_price, `is_sale`, COALESCE(max(plant_set.sale_price),0) as max_sale_price, COALESCE(min(plant_set.sale_price),0) as min_sale_price FROM `plant_set` INNER JOIN tools on plant_set.tool_id = tools.tool_id INNER JOIN colors on colors.color_id = plant_set.tool_color_id LEFT JOIN (SELECT tools.tool_id, GROUP_CONCAT(tools_categories.category_id) as category_ids FROM tools_categories INNER JOIN tools on tools.tool_id = tools_categories.tool_id GROUP BY tools.tool_id) as tools_categories on plant_set.tool_id = tools_categories.tool_id WHERE tools.status = 1 and plant_set.plant_id = 1 and plant_set.status = 1 and tools.name like ? GROUP BY plant_set.tool_id;";
         return $this->select($sql, array($search));
+    }
+
+    public function setToolStatus($status, $toolId)
+    {
+        $sql = "UPDATE `tools` SET `status`= ? WHERE `tool_id` = ?";
+        $result = $this->update($sql, array($status, $toolId));
+        if ($result['rowCount'] > 0) {
+            return ['message' => true];
+        } else {
+            return ['message' => false];
+        }
     }
 
     // public function insertTool($name, $price, $isSale, $salePrice, $slug, $shortDescription, $description, $funFact, $status, $images, $light, $petFriendly, $water, $sadPlantSigns, $supplierId)

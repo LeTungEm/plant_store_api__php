@@ -38,6 +38,11 @@ switch ($action) {
         $search = $_POST["search"];
         $message = $tools->search($search);
         break;
+    case "setToolStatus":
+        $status = $_POST["status"];
+        $toolId = $_POST["toolId"];
+        $message = $tools->setToolStatus($status, $toolId);
+        break;
     // case "insertPlant":
     //     $name = $_POST["name"];
     //     $price = $_POST["price"];
