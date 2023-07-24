@@ -9,7 +9,7 @@ class Order extends Db
 
     public function getByOrderId($orderId)
     {
-        $sql = "SELECT name_receiver,phone_receiver,address_receiver,`transport_fee`,`is_pay`,`order`.`status`,`note`,`order`.`create_date`,payment_methods.name as payment_method,shipping_providers.name as shipping FROM `order` INNER JOIN shipping_providers on shipping_providers.shipping_provider_id = `order`.`shipping_provider_id` INNER JOIN payment_methods on payment_methods.payment_method_id = `order`.payment_method_id INNER JOIN accounts on accounts.account_id = `order`.`account_id` WHERE `order`.`order_id` = ?";
+        $sql = "SELECT name_receiver,phone_receiver,address_receiver,`transport_fee`,`is_pay`,`order`.`status`,`note`,`order`.`create_date`,payment_methods.name as payment_method, payment_methods.payment_method_id, shipping_providers.name as shipping, shipping_providers.shipping_provider_id, total FROM `order` INNER JOIN shipping_providers on shipping_providers.shipping_provider_id = `order`.`shipping_provider_id` INNER JOIN payment_methods on payment_methods.payment_method_id = `order`.payment_method_id INNER JOIN accounts on accounts.account_id = `order`.`account_id` WHERE `order`.`order_id` = ?";
         $data = $this->select($sql, array($orderId));
         if(count($data) > 0){
             return ['message' => true, 'data' => $data[0]];
