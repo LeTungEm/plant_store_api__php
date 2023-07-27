@@ -3,7 +3,7 @@ class Colors extends Db
 {
     public function getAll()
     {
-        $sql = "SELECT * FROM `colors` where color_id <> 1";
+        $sql = "SELECT color_id,`code`,`name` FROM `colors` where color_id <> 1";
         return $this->select($sql);
     }
 
