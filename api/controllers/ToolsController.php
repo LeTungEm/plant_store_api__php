@@ -43,38 +43,6 @@ switch ($action) {
         $toolId = $_POST["toolId"];
         $message = $tools->setToolStatus($status, $toolId);
         break;
-    // case "insertPlant":
-    //     $name = $_POST["name"];
-    //     $price = $_POST["price"];
-    //     $isSale = $_POST["isSale"];
-    //     $salePrice = $_POST["salePrice"];
-    //     $slug = $_POST["slug"];
-    //     $shortDescription = $_POST["shortDescription"];
-    //     $description = $_POST["description"];
-    //     $funFact = $_POST["funFact"];
-    //     $status = $_POST["status"];
-    //     $images = $_POST["images"];
-    //     $light = $_POST["light"];
-    //     $petFriendly = $_POST["petFriendly"];
-    //     $water = $_POST["water"];
-    //     $sadPlantSigns = $_POST["sadPlantSigns"];
-    //     $supplierId = $_POST["supplierId"];
-        
-    //     $message = $tools->insertTool($name, $price, $isSale, $salePrice, $slug, $shortDescription, $description, $funFact, $status, $images, $light, $petFriendly, $water, $sadPlantSigns, $supplierId);
-    //     break;
-    // case "deleteAccount":
-    //     $email = $_POST["email"];
-    //     $message = $plants->deleteAccount($email) > 0;
-    //     break;
-    // case "updateAccount":
-    //     $name = $_POST["name"];
-    //     $address = $_POST["address"];
-    //     $phone = $_POST["phone"];
-    //     $gender = $_POST["gender"];
-    //     $birthday = $_POST["birthday"];
-    //     $email = $_POST["email"];
-    //     $message = $plants->updateAccount($name, $address, $phone, $gender, $birthday, $email);
-    //     break;
     default:
         $message = "action is not found";
         break;

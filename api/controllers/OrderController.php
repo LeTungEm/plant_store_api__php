@@ -33,6 +33,7 @@ switch ($action) {
         $message = $order->cancelOrder($orderId);
         break;
     case "insertOrder":
+        $status = $_POST["status"];
         $transportFee = $_POST["transportFee"];
         $nameReceiver = $_POST["nameReceiver"];
         $phoneReceiver = $_POST["phoneReceiver"];
@@ -47,7 +48,22 @@ switch ($action) {
         $paymentMethodId = $_POST["paymentMethodId"];
         $total = $_POST["total"];
 
-        $message = $order->insertOrder($transportFee, $nameReceiver, $phoneReceiver, $addressReceiver, $isPay, $note, $deleteReason, $payDate, $accountId, $couponId, $shippingProviderId, $paymentMethodId, $total);
+        $message = $order->insertOrder($status, $transportFee, $nameReceiver, $phoneReceiver, $addressReceiver, $isPay, $note, $deleteReason, $payDate, $accountId, $couponId, $shippingProviderId, $paymentMethodId, $total);
+        break;
+    case "updateOrder":
+        $transportFee = $_POST["transportFee"];
+        $nameReceiver = $_POST["nameReceiver"];
+        $phoneReceiver = $_POST["phoneReceiver"];
+        $addressReceiver = $_POST["addressReceiver"];
+        $isPay = $_POST["isPay"];
+        $status = $_POST["status"];
+        $note = $_POST["note"];
+        $shippingProviderId = $_POST["shippingProviderId"];
+        $paymentMethodId = $_POST["paymentMethodId"];
+        $total = $_POST["total"];
+        $orderId = $_POST["orderId"];
+        
+        $message = $order->updateOrder($transportFee, $nameReceiver, $phoneReceiver, $addressReceiver, $isPay, $status, $note, $shippingProviderId, $paymentMethodId, $total, $orderId);
         break;
     default:
         $message = "action is not found";

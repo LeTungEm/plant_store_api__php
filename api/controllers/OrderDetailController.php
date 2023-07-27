@@ -29,6 +29,15 @@ switch ($action) {
         $orderDetails = $_POST["orderDetail"];
         $message = $orderDetail->insertOrderDetail($orderId, $orderDetails);
         break;
+    case "updateOrderDetail":
+        $orderId = $_POST["orderId"];
+        $orderDetails = $_POST["orderDetail"];
+        $message = $orderDetail->updateOrderDetail($orderId, $orderDetails);
+        break;
+    case "deleteOrderDetail":
+        $orderId = $_POST["orderId"];
+        $message = $orderDetail->deleteOrderDetail($orderId);
+        break;
     default:
         $message = "action is not found";
         break;

@@ -11,20 +11,14 @@ header("Access-Control-Allow-Headers: Content-Type");
 
 include("../Config/config.php");
 include('../Models/Db.class.php');
-include('../Models/Colors.class.php');
+include('../Models/Sizes.class.php');
 
 $action = isset($_POST["action"]) ? $_POST["action"] : '';
-$colors = new Colors();
+$sizes = new Sizes();
 $message = array();
 switch ($action) {
     case "getAll":
-        $message = $colors->getAll();
-        break;
-    case "getUsedByPlants":
-        $message = $colors->getUsedByPlants();
-        break;
-    case "getUsedByTools":
-        $message = $colors->getUsedByTools();
+        $message = $sizes->getAll();
         break;
     default:
         $message = "action is not found";

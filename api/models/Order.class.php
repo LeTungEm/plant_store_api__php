@@ -34,13 +34,25 @@ class Order extends Db
         }
     }
 
-    public function insertOrder($transportFee, $nameReceiver, $phoneReceiver, $addressReceiver, $isPay, $note, $deleteReason, $payDate, $accountId, $couponId, $shippingProviderId, $paymentMethodId, $total)
+    public function insertOrder($status,$transportFee, $nameReceiver, $phoneReceiver, $addressReceiver, $isPay, $note, $deleteReason, $payDate, $accountId, $couponId, $shippingProviderId, $paymentMethodId, $total)
     {
-        $sql = "INSERT INTO `order`(`transport_fee`, `name_receiver`, `phone_receiver`, `address_receiver`, `is_pay`, `note`, `delete_reason`, `pay_date`, `account_id`, `coupon_id`, `shipping_provider_id`, `payment_method_id`, `total`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
-        $data = $this->insert($sql, array($transportFee, $nameReceiver, $phoneReceiver, $addressReceiver, $isPay, $note, $deleteReason, $payDate, $accountId, $couponId, $shippingProviderId, $paymentMethodId, $total));
+        $sql = "INSERT INTO `order`(`status`, `transport_fee`, `name_receiver`, `phone_receiver`, `address_receiver`, `is_pay`, `note`, `delete_reason`, `pay_date`, `account_id`, `coupon_id`, `shipping_provider_id`, `payment_method_id`, `total`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        $data = $this->insert($sql, array($status, $transportFee, $nameReceiver, $phoneReceiver, $addressReceiver, $isPay, $note, $deleteReason, $payDate, $accountId, $couponId, $shippingProviderId, $paymentMethodId, $total));
         // message: true, orderId: response.insertId
         if ($data['rowCount'] > 0) {
             return ['message' => true, 'orderId' => $data['lastInsertId']];
+        } else {
+            return ['message' => false];
+        }
+    }
+
+    public function updateOrder($transportFee, $nameReceiver, $phoneReceiver, $addressReceiver, $isPay, $status, $note, $shippingProviderId, $paymentMethodId, $total, $orderId)
+    {
+        $sql = "UPDATE `order` SET `transport_fee`= ?,`name_receiver`= ?,`phone_receiver`= ?,`address_receiver`= ?,`is_pay`= ?,`status`= ?,`note`= ?,`shipping_provider_id`= ?,`payment_method_id`= ?,`total`= ? WHERE `order_id` = ?";
+        $data = $this->update($sql, array($transportFee, $nameReceiver, $phoneReceiver, $addressReceiver, $isPay, $status, $note, $shippingProviderId, $paymentMethodId, $total, $orderId));
+        // message: true, orderId: response.insertId
+        if ($data['rowCount'] > 0) {
+            return ['message' => true];
         } else {
             return ['message' => false];
         }

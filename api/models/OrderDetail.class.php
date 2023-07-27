@@ -18,16 +18,38 @@ class OrderDetail extends Db
         $orderDetail = json_decode($orderDetail);
         $arrValueForm = array();
         $arrValue = array();
-        foreach($orderDetail as $value){
+        foreach ($orderDetail as $value) {
             $arrValue[] = $value->quantity;
             $arrValue[] = $value->price;
-            $arrValue[] = $value->price*$value->quantity;
+            $arrValue[] = $value->price * $value->quantity;
             $arrValue[] = $orderId;
             $arrValue[] = $value->plantSetId;
             $arrValueForm[] = '(?,?,?,?,?)';
         }
-        $sql = "INSERT INTO `order_detail`(`quantity`, `price`, `total`, `order_id`, `plant_set_id`) VALUES ".implode(", ", $arrValueForm).';';
+        $sql = "INSERT INTO `order_detail`(`quantity`, `price`, `total`, `order_id`, `plant_set_id`) VALUES " . implode(", ", $arrValueForm) . ';';
         $data = $this->insert($sql, $arrValue);
+        if ($data['rowCount'] > 0) {
+            return ['message' => true, 'rowCount' => $data['rowCount']];
+        } else {
+            return ['message' => false];
+        }
+    }
+
+    public function deleteOrderDetail($orderId)
+    {
+        $sql = "DELETE FROM `order_detail` WHERE `order_id` = ?";
+        $data = $this->delete($sql, array($orderId));
+        if ($data['rowCount'] > 0) {
+            return ['message' => true, 'rowCount' => $data['rowCount']];
+        } else {
+            return ['message' => false];
+        }
+    }
+    public function updateOrderDetail($orderId, $orderDetail)
+    {
+        $this->deleteOrderDetail($orderId);
+        $data = $this->insertOrderDetail($orderId, $orderDetail);
+
         if ($data['rowCount'] > 0) {
             return ['message' => true, 'rowCount' => $data['rowCount']];
         } else {

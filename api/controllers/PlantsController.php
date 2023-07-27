@@ -87,19 +87,6 @@ switch ($action) {
         $plantId = $_POST["plantId"];
         $message = $plants->deletePlant($plantId);
         break;
-    // case "deleteAccount":
-    //     $email = $_POST["email"];
-    //     $message = $plants->deleteAccount($email) > 0;
-    //     break;
-    // case "updateAccount":
-    //     $name = $_POST["name"];
-    //     $address = $_POST["address"];
-    //     $phone = $_POST["phone"];
-    //     $gender = $_POST["gender"];
-    //     $birthday = $_POST["birthday"];
-    //     $email = $_POST["email"];
-    //     $message = $plants->updateAccount($name, $address, $phone, $gender, $birthday, $email);
-    //     break;
     default:
         $message = "action is not found";
         break;
