@@ -31,6 +31,10 @@ switch ($action) {
         $listTool =  $_POST["listTool"];
         $message = $plantSet->insertPlantSet($plantId, $plantPrice, $listTool);
         break;
+    case "insertToolVariant":
+        $listVariant =  $_POST["listVariant"];
+        $message = $plantSet->insertToolVariant($listVariant);
+        break;
     case "deletePlantSetByPlantId":
         $plantId =  $_POST["plantId"];
         $message = $plantSet->deletePlantSetByPlantId($plantId);

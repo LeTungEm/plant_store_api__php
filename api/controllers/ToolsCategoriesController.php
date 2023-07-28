@@ -21,6 +21,11 @@ switch ($action) {
         $categoryId = $_POST["categoryId"];
         $message = $toolsCategories->getByCategoriesId($categoryId);
         break;
+    case "inserToolCategories":
+        $toolId = $_POST["toolId"];
+        $listCategory = $_POST["listCategory"];
+        $message = $toolsCategories->inserToolCategories($toolId, $listCategory);
+        break;
     default:
         $message = "action is not found";
         break;

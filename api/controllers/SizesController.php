@@ -20,6 +20,17 @@ switch ($action) {
     case "getAll":
         $message = $sizes->getAll();
         break;
+    case "getForManager":
+        $message = $sizes->getForManager();
+        break;
+    case "insertSize":
+        $name = $_POST["name"];
+        $message = $sizes->insertSize($name);
+        break;
+    case "deleteSize":
+        $sizeId = $_POST["sizeId"];
+        $message = $sizes->deleteSize($sizeId);
+        break;
     default:
         $message = "action is not found";
         break;

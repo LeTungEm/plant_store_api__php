@@ -43,6 +43,19 @@ switch ($action) {
         $toolId = $_POST["toolId"];
         $message = $tools->setToolStatus($status, $toolId);
         break;
+    case "isSlugExist":
+        $toolSlug = $_POST["toolSlug"];
+        $message = $tools->isSlugExist($toolSlug);
+        break;
+    case "insertTool":
+        $name = $_POST["name"];
+        $slug = $_POST["slug"];
+        $description = $_POST["description"];
+        $status = $_POST["status"];
+        $image = $_POST["image"];
+        $supplier_id = $_POST["supplier_id"];
+        $message = $tools->insertTool($name, $slug, $description, $status, $image, $supplier_id);
+        break;
     default:
         $message = "action is not found";
         break;

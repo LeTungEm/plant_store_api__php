@@ -40,7 +40,7 @@ class PlantSet extends Db
         $arrValue = array();
         if (count($listTool) > 0) {
             foreach ($listTool as $value) {
-                $image = isset($value->image) ? $value->image : 'default';
+                $image = isset($value->image) ? $value->image : 'default.jpg';
                 $price = $value->price;
                 $price = $price + $plantPrice;
                 $is_sale = isset($value->is_sale) ? $value->is_sale : 0;
@@ -51,11 +51,41 @@ class PlantSet extends Db
                 $arrValue[] = $price;
                 $arrValue[] = $is_sale;
                 $arrValue[] = $sale_price;
-                $arrValue[] = 1;
+                $arrValue[] = $value->status;
                 $arrValue[] = $plantId;
                 $arrValue[] = $value->tool_id;
                 $arrValue[] = $value->color_id;
                 $arrValue[] = $value->size_id;
+                $arrValue[] = $value->quantity;
+                $arrValueForm[] = '(?,?,?,?,?,?,?,?,?,?)';
+            }
+
+            $sql = "INSERT INTO `plant_set`(`image`, `price`, `is_sale`, `sale_price`, `status`, `plant_id`, `tool_id`, `tool_color_id`, `tool_size_id`, `tool_quantity`) VALUES " . implode(", ", $arrValueForm) . ';';
+            $result = $this->insert($sql, $arrValue);
+            if ($result['rowCount'] > 0) {
+                return ['message' => true, 'rowCount' => $result['rowCount']];
+            } else {
+                return ['message' => false];
+            }
+        }
+    }
+    public function insertToolVariant($listVariant)
+    {
+
+        $listVariant = json_decode($listVariant);
+        $arrValueForm = array();
+        $arrValue = array();
+        if (count($listVariant) > 0) {
+            foreach ($listVariant as $value) {
+                $arrValue[] = $value->image;
+                $arrValue[] = $value->price;
+                $arrValue[] = $value->isSale;
+                $arrValue[] = $value->salePrice;
+                $arrValue[] = 1;
+                $arrValue[] = 1;
+                $arrValue[] = $value->toolId;
+                $arrValue[] = $value->colorId;
+                $arrValue[] = $value->sizeId;
                 $arrValue[] = $value->quantity;
                 $arrValueForm[] = '(?,?,?,?,?,?,?,?,?,?)';
             }
@@ -138,9 +168,11 @@ class PlantSet extends Db
         $arrIsSale = '';
         $arrSalePrice = '';
         $arrPrice = '';
+        $arrStatus = '';
         if (count($planSets) > 0) {
             foreach ($planSets as $value) {
                 $arrImageForm .= " WHEN `plant_set_id` = " . $value->plant_set_id . " THEN '" . $value->image . "'";
+                $arrStatus .= " WHEN `plant_set_id` = " . $value->plant_set_id . " THEN " . $value->status;
                 $arrIsSale .= " WHEN `plant_set_id` = " . $value->plant_set_id . " THEN " . $value->is_sale;
                 $arrSalePrice .= " WHEN `plant_set_id` = " . $value->plant_set_id . " THEN " . ($value->sale_price == 0 ? 'null' : $value->sale_price);
                 $arrPrice .= " WHEN `plant_set_id` = " . $value->plant_set_id . " THEN " . ($value->tool_price + $plantPrice);
@@ -149,8 +181,7 @@ class PlantSet extends Db
 
             $planSetIdArr = "(" . implode(", ", $planSetIdArr) . ")";
 
-            $sql = "UPDATE `plant_set` SET `price` = CASE " . $arrPrice . " END,`image` = CASE " . $arrImageForm . " END, `is_sale` = CASE " . $arrIsSale . " END, `sale_price` = CASE " . $arrSalePrice . " END, `status` = 1 WHERE `plant_set_id` in " . $planSetIdArr;
-            echo $sql;
+            $sql = "UPDATE `plant_set` SET `status` = CASE ". $arrStatus ." END, `price` = CASE " . $arrPrice . " END,`image` = CASE " . $arrImageForm . " END, `is_sale` = CASE " . $arrIsSale . " END, `sale_price` = CASE " . $arrSalePrice . " END WHERE `plant_set_id` in " . $planSetIdArr;
             $result = $this->update($sql);
             if ($result['rowCount'] > 0) {
                 return ['message' => true];
