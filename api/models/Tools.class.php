@@ -86,6 +86,28 @@ class Tools extends Db
         }
     }
 
+    public function getBySlug($toolSlug)
+    {
+        $sql = "SELECT category_ids.category_ids, tools.`tool_id`,`name`,tools.`slug`,`description`,tools.`status`,tools.`image`,`supplier_id`, max(plant_set.price) as price, max(plant_set.tool_quantity) as quantity  FROM `tools` INNER JOIN plant_set on plant_set.tool_id = tools.tool_id LEFT JOIN (SELECT tools_categories.tool_id, GROUP_CONCAT(categories.category_id) as category_ids FROM tools_categories INNER JOIN categories on tools_categories.category_id = categories.category_id INNER JOIN tools on tools.tool_id = tools_categories.tool_id WHERE tools.slug = ?) as category_ids on category_ids.tool_id = tools.tool_id WHERE tools.`slug` = ? AND plant_set.plant_id = 1;";
+        $data = $this->select($sql, array($toolSlug, $toolSlug));
+        if (count($data) > 0) {
+            return ['message' => true, 'data' => $data[0]];
+        } else {
+            return ['message' => false];
+        }
+    }
+
+    public function getVariantByToolId($toolId)
+    {
+        $sql = "SELECT DISTINCT sizes.size_id, sizes.name, variant.variants as selfColors from plant_set INNER JOIN sizes on sizes.size_id = plant_set.tool_size_id INNER JOIN (SELECT plant_set.tool_size_id, GROUP_CONCAT(CONCAT('{','\"plantSetId\":',plant_set.plant_set_id,',','\"color_id\":',colors.color_id,',\"name\":\"',colors.name,'\",\"code\":\"',colors.code,'\",\"toolPrice\":',plant_set.price,',\"toolQuantity\":',plant_set.tool_quantity,',\"image\":\"',plant_set.image,'\"}')) as variants FROM plant_set INNER JOIN colors on colors.color_id = plant_set.tool_color_id WHERE plant_set.tool_id = ? AND plant_set.plant_id = 1 GROUP BY plant_set.tool_size_id) as variant on variant.tool_size_id = sizes.size_id WHERE plant_set.tool_id = ? and plant_set.plant_id = 1;";
+        $data = $this->select($sql, array($toolId, $toolId));
+        if (count($data) > 0) {
+            return ['message' => true, 'data' => $data];
+        } else {
+            return ['message' => false];
+        }
+    }
+
     // public function deleteAccount($email)
     // {
     //     $sql = "UPDATE `accounts` SET `status`= 0 WHERE `email` = ?";
@@ -107,5 +129,10 @@ class Tools extends Db
     //         return ['message' => false];
     //     }
     // }
+
+
+    // SELECT DISTINCT sizes.size_id, sizes.name, variant.variants as selfColors from plant_set INNER JOIN sizes on sizes.size_id = plant_set.tool_size_id INNER JOIN (SELECT plant_set.tool_size_id, GROUP_CONCAT(CONCAT('{color_id:',colors.color_id,',name:',colors.name,', code:',colors.code,',toolPrice:',plant_set.price,',toolQuantity:',plant_set.tool_quantity,',image:',plant_set.image,'}')) as variants FROM plant_set INNER JOIN colors on colors.color_id = plant_set.tool_color_id WHERE plant_set.tool_id = ? AND plant_set.plant_id = 1 GROUP BY plant_set.tool_size_id) as variant on variant.tool_size_id = sizes.size_id WHERE plant_set.tool_id = ? and plant_set.plant_id = 1;
+
+
 }
 ?>

@@ -47,6 +47,14 @@ switch ($action) {
         $toolSlug = $_POST["toolSlug"];
         $message = $tools->isSlugExist($toolSlug);
         break;
+    case "getBySlug":
+        $toolSlug = $_POST["toolSlug"];
+        $message = $tools->getBySlug($toolSlug);
+        break;
+    case "getVariantByToolId":
+        $toolId = $_POST["toolId"];
+        $message = $tools->getVariantByToolId($toolId);
+        break;
     case "insertTool":
         $name = $_POST["name"];
         $slug = $_POST["slug"];
